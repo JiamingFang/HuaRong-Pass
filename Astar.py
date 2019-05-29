@@ -1,5 +1,6 @@
 from queue import PriorityQueue as PQ
 import copy
+import sys
 
 class State:
     def __init__(self,T,parent,cost):
@@ -15,6 +16,27 @@ class State:
         for i in range(5):
             for j in range(4):
                 s+=str(self.T[i][j])
+        return s
+
+    def toOutput(self):
+        s = ""
+        for i in range(5):
+            j = 0
+            while j < 4:
+                # print(j)
+                if self.T[i][j] == 0:
+                    s+="0"
+                elif self.T[i][j] == 1:
+                    s+="1"
+                elif self.T[i][j] == 7:
+                    s+="4"
+                elif j < 3 and self.T[i][j] == self.T[i][j+1]:
+                    s+="22"
+                    j+=1
+                else:
+                    s+="3"
+                j+=1
+            s+="\n"
         return s
 
      
@@ -266,31 +288,66 @@ def get_successors(state):
 
 def a_star(initial_state):
     frontier = PQ()
-    index = 0
+    extended = 0
+    generated = 0
     frontier.put((get_heuristic(initial_state), initial_state))
     visited = set()
     visited.add(initial_state.toString())
     while frontier.qsize() != 0:
         cur = frontier.get()[1]
-        index +=1
+        extended +=1
         # print(index)
         # print(cur)
         successors = get_successors(cur)
         for s in successors:
             if is_goal(s): 
-                print(index)
+                output(initial_state, s, generated, extended)
                 return s
             priority = get_heuristic(s)+s.cost
             # print(priority)
             if s.toString() not in visited:
+                generated += 1
                 frontier.put((priority,s))
                 visited.add(s.toString())
     return 
 
-init = read_puzzle(1)
-print(init.T)
-ans = a_star(init)
-print(ans.cost)
+
+def output(init, final, generated, expanded):
+    if int(sys.argv[1]) == 1:
+        f = open("puzzle1sol astar.txt ", "w")
+    else:
+        f = open("puzzle2sol astar.txt ", "w")
+    f.write("Initial state:\n")
+    f.write(init.toOutput())
+    f.write("\n\n"+"Cost of the (optimal) solution: "+str(final.cost)+"\n")
+    f.write("Number of states expanded: "+str(expanded)+"\n")
+    f.write("Number of stated generated: "+ str(generated)+"\n")
+    f.write("\n"+"(Optimal) solution:"+"\n\n")
+    path = []
+    cost = final.cost
+    while final.cost != 0:
+        path+=[final.toOutput()]
+        final = copy.deepcopy(final.parent)
+    path+=[final.toOutput()]
+    
+    i = 0
+    while i < cost+1:
+        f.write(str(i)+"\n")
+        f.write(path[cost-i]+"\n")
+        i+=1
+    # print(path)
+    
+
+    f.close()
+
+if len(sys.argv) == 3:
+    init = read_puzzle(int(sys.argv[1]))
+    # print(init.toOutput())
+    ans = a_star(init)
+
+
+# print(init.T)
+# print(ans.cost)
 
 # test1 = State([[2,1,1,3],[2,1,1,3],[4,6,6,5],[4,7,7,5],[7,0,0,7]],[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]],-1)
 # get_successors(test1)
