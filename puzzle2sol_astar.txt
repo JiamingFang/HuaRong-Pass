@@ -1,3 +1,4 @@
+ASTAR
 Initial state:
 4114
 4114
@@ -7,8 +8,8 @@ Initial state:
 
 
 Cost of the (optimal) solution: 53
-Number of states expanded: 23757
-Number of stated generated: 25585
+Number of states expanded: 23812
+Number of stated generated: 25640
 
 (Optimal) solution:
 
@@ -48,23 +49,23 @@ Number of stated generated: 25585
 0322
 
 5
-4114
 4110
+4114
+3224
+3322
+0322
+
+6
+4110
+4114
 0224
 3322
 3322
 
-6
-4114
-4110
-2204
-3322
-3322
-
 7
-4114
 4110
-2240
+4114
+2204
 3322
 3322
 
@@ -233,8 +234,8 @@ Number of stated generated: 25585
 2244
 3311
 3311
-2240
-0224
+2244
+2200
 
 32
 2244
@@ -265,8 +266,8 @@ Number of stated generated: 25585
 2244
 
 36
-2200
-3344
+0224
+3340
 3311
 2211
 2244
@@ -279,9 +280,9 @@ Number of stated generated: 25585
 2244
 
 38
-3220
+0022
 3344
-0311
+3311
 2211
 2244
 
@@ -325,7 +326,7 @@ Number of stated generated: 25585
 3344
 2211
 2211
-0440
+4004
 
 45
 3322
@@ -373,8 +374,8 @@ Number of stated generated: 25585
 3322
 3344
 2222
-0411
 4011
+0411
 
 52
 3322

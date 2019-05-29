@@ -1,4 +1,5 @@
 from queue import PriorityQueue as PQ
+import queue
 import copy
 import sys
 
@@ -312,11 +313,45 @@ def a_star(initial_state):
     return 
 
 
+def bfs(initial_state):
+    frontier = queue.Queue()
+    extended = 0
+    generated = 0
+    frontier.put((get_heuristic(initial_state), initial_state))
+    visited = set()
+    visited.add(initial_state.toString())
+    while frontier.qsize() != 0:
+        cur = frontier.get()[1]
+        extended +=1
+        # print(index)
+        # print(cur)
+        successors = get_successors(cur)
+        for s in successors:
+            if is_goal(s): 
+                output(initial_state, s, generated, extended)
+                return s
+            priority = get_heuristic(s)+s.cost
+            # print(priority)
+            if s.toString() not in visited:
+                generated += 1
+                frontier.put((priority,s))
+                visited.add(s.toString())
+    return
+
+
 def output(init, final, generated, expanded):
-    if int(sys.argv[1]) == 1:
-        f = open("puzzle1sol astar.txt ", "w")
-    else:
-        f = open("puzzle2sol astar.txt ", "w")
+    if int(sys.argv[2]) == 1:
+        if int(sys.argv[1]) == 1:
+            f = open("puzzle1sol_astar.txt ", "w")
+        else:
+            f = open("puzzle2sol_astar.txt ", "w")
+        f.write("ASTAR\n")
+    elif int(sys.argv[2]) == 2:
+        if int(sys.argv[1]) == 1:
+            f = open("puzzle1sol_bfs.txt ", "w")
+        else:
+            f = open("puzzle2sol_bfs.txt ", "w")
+        f.write("BFS\n")
     f.write("Initial state:\n")
     f.write(init.toOutput())
     f.write("\n\n"+"Cost of the (optimal) solution: "+str(final.cost)+"\n")
@@ -343,7 +378,10 @@ def output(init, final, generated, expanded):
 if len(sys.argv) == 3:
     init = read_puzzle(int(sys.argv[1]))
     # print(init.toOutput())
-    ans = a_star(init)
+    if int(sys.argv[2]) == 1:
+        ans = a_star(init)
+    elif int(sys.argv[2]) == 2:
+        ans = bfs(init)
 
 
 # print(init.T)
