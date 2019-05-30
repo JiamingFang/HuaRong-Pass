@@ -24,7 +24,6 @@ class State:
         for i in range(5):
             j = 0
             while j < 4:
-                # print(j)
                 if self.T[i][j] == 0:
                     s+="0"
                 elif self.T[i][j] == 1:
@@ -58,7 +57,6 @@ def read_puzzle(id):
         j = 0
         for c in line:
             if c!="\n":
-                #print("line")
                 init.T[i][j] = int(c)
                 j+=1
         i+=1
@@ -317,11 +315,11 @@ def bfs(initial_state):
     frontier = queue.Queue()
     extended = 0
     generated = 0
-    frontier.put((get_heuristic(initial_state), initial_state))
+    frontier.put(initial_state)
     visited = set()
     visited.add(initial_state.toString())
     while frontier.qsize() != 0:
-        cur = frontier.get()[1]
+        cur = frontier.get()
         extended +=1
         # print(index)
         # print(cur)
@@ -334,7 +332,33 @@ def bfs(initial_state):
             # print(priority)
             if s.toString() not in visited:
                 generated += 1
-                frontier.put((priority,s))
+                frontier.put(s)
+                visited.add(s.toString())
+    return
+
+
+def dfs(initial_state):
+    frontier = queue.LifoQueue()
+    extended = 0
+    generated = 0
+    frontier.put(initial_state)
+    visited = set()
+    visited.add(initial_state.toString())
+    while frontier.qsize() != 0:
+        cur = frontier.get()
+        extended +=1
+        # print(index)
+        # print(cur)
+        successors = get_successors(cur)
+        for s in successors:
+            if is_goal(s): 
+                output(initial_state, s, generated, extended)
+                return s
+            priority = get_heuristic(s)+s.cost
+            # print(priority)
+            if s.toString() not in visited:
+                generated += 1
+                frontier.put(s)
                 visited.add(s.toString())
     return
 
@@ -352,6 +376,12 @@ def output(init, final, generated, expanded):
         else:
             f = open("puzzle2sol_bfs.txt ", "w")
         f.write("BFS\n")
+    else:
+        if int(sys.argv[1]) == 1:
+            f = open("puzzle1sol_dfs.txt ", "w")
+        else:
+            f = open("puzzle2sol_dfs.txt ", "w")
+        f.write("DFS\n")
     f.write("Initial state:\n")
     f.write(init.toOutput())
     f.write("\n\n"+"Cost of the (optimal) solution: "+str(final.cost)+"\n")
@@ -362,7 +392,7 @@ def output(init, final, generated, expanded):
     cost = final.cost
     while final.cost != 0:
         path+=[final.toOutput()]
-        final = copy.deepcopy(final.parent)
+        final = final.parent
     path+=[final.toOutput()]
     
     i = 0
@@ -382,6 +412,8 @@ if len(sys.argv) == 3:
         ans = a_star(init)
     elif int(sys.argv[2]) == 2:
         ans = bfs(init)
+    elif int(sys.argv[2]) == 3:
+        ans = dfs(init)
 
 
 # print(init.T)
